@@ -184,7 +184,31 @@ def DFS(state: Board) -> Board:
     Returns:
         either None in the case of invalid input or a solved board
     """
-    pass
+    # state.num_nums_placed += 1
+    # for i in range(state.size):
+    #     for j in range(state.size):
+    #         assignment = state.rows[i][j] 
+    the_stack = Stack([state])
+    the_stack.push(state)
+    while not the_stack.is_empty():
+        current = the_stack.pop()
+        if current.goal_test():
+            return current
+        elif not current.failure_test():
+            row, column = current.find_most_contrained_cell()
+            for sel in current.rows[row][column]:
+                #Copy of Board
+                cpy = copy.deepcopy(current)
+                cpy.update(row, column, sel)
+                the_stack.push(cpy)
+
+            # sel = current.rows[row][column]
+            # current.update(row, column, sel[0])
+            # current.print_pretty()
+            # the_stack.push(current)
+    return None
+    # pass
+
 
 
 def BFS(state: Board) -> Board:
@@ -199,7 +223,22 @@ def BFS(state: Board) -> Board:
     Returns:
         either None in the case of invalid input or a solved board
     """
-    pass
+    the_queue = Queue([state])
+    count  = 0
+    while not the_queue.is_empty():
+        current = the_queue.pop()
+        count += 1
+        if current.goal_test():
+            return current
+        elif not current.failure_test():
+            row, column = current.find_most_contrained_cell()
+            for sel in current.rows[row][column]:
+                #Copy of Board
+                cpy = copy.deepcopy(current)
+                cpy.update(row, column, sel)
+                the_queue.push(cpy)
+    return None
+    # pass
 
 
 if __name__ == "__main__":
@@ -322,7 +361,7 @@ if __name__ == "__main__":
     #Create a sudoku board.
     g = Board()
     #Place the 28 assignments in first_moves on the board.
-    for trip in first_moves:
+    for trip in first_moves: # Originally first_moves
         g.update(trip[0],trip[1],trip[2])
     g.print_pretty()
     #From the above print statement, you can see which numbers
